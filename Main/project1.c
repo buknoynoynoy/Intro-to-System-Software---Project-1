@@ -49,6 +49,7 @@ void printTable() {
 
 int main() {
 
+    //initializes and prints the current table
     initializeHashTable();
     printTable();
 
