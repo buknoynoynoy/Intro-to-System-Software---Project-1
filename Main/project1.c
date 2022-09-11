@@ -5,14 +5,6 @@
 
 #define TABLESIZE 21
 
-
-//hash function
-int hash(char *name, int key) {
-    int hashValue = 0;
-    hashValue = key % TABLESIZE;
-    return hashValue;
-} //end hash
-
 //struct for the user inputs
 typedef struct inputs {
     char name;
@@ -21,6 +13,13 @@ typedef struct inputs {
 } inputs; //end struct
 
 inputs *HashTable[TABLESIZE];
+
+//hash function
+int hash(char *name, int key) {
+    int hashValue = 0;
+    hashValue = key % TABLESIZE;
+    return hashValue;
+} //end hash
 
 //creates the hash table
 void initializeHashTable() {
