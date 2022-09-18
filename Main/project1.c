@@ -5,8 +5,8 @@
 /*********************************
  * HASHTABLE IMPLEMENTATION FOR  *
  * PASS I ASSEMBLY               *
- *				 *
- * Date Due: 9/18/2022		 *
+ *				     			 *
+ * Date Due: 9/18/2022			 *
  * By: Vincent Almeda N01473764  *
  ********************************/
 
