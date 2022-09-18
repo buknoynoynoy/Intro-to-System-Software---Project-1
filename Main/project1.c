@@ -2,6 +2,13 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+/*********************************
+ * HASHTABLE IMPLEMENTATION FOR  *
+ * PASS I ASSEMBLY               *
+ *				 *
+ * Date Due: 9/18/2022		 *
+ * By: Vincent Almeda N01473764  *
+ ********************************/
 
 #define TABLESIZE 101
 
@@ -45,9 +52,13 @@ bool hashInsert(inputs *person) {
     //checks if the person already exists
     if ((HashTable[index] != NULL)) {
         if ((strncmp(HashTable[index]->name, person->name, 256) == 0)) {
-            printf("%s found at location %d with a value of %d\n", HashTable[index]->name, index, HashTable[index]->key);
+            //printf("%s found at location %d with a value of %d\n", HashTable[index]->name, index, HashTable[index]->key);
+	    printf("ERROR: %s already exists at location %d\n", HashTable[index]->name, index);
             return false;
-        } 
+        } else {
+		printf("Collision occured\n");
+		return false;
+	}	
         return false;
     }
 
@@ -58,6 +69,15 @@ bool hashInsert(inputs *person) {
 
 } //end hashInsert
 
+inputs *hashSearch (char *nameSearch) {
+	int index = hash(nameSearch);
+	if (HashTable[index] != NULL && strncmp(HashTable[index]->name, nameSearch, 256) == 0) {
+		return HashTable[index];
+	} else {
+		return NULL;
+	} //end if
+} //end hashSearch
+
 //prints the table
 void printTable() {
     int i;
@@ -65,7 +85,7 @@ void printTable() {
         if (HashTable[i] == NULL) {
             printf("%d\t___\n", i);
         } else {
-            printf("%d\t%s\n", i, HashTable[i]->name);
+            printf("%d\t%s\tKEY: %d\n", i, HashTable[i]->name, HashTable[i]->key);
         }
     }
 
@@ -73,28 +93,64 @@ void printTable() {
 }
 
 
-int main(void) {
+int main(int argc, char *argv[]) {
+	
+	initializeHashTable();
 
-    //initializes the table
-    initializeHashTable();
+	char filename[100];
+	strcpy(filename, argv[1]);
+	
+	//printf("name of file: %s\n", filename);
 
-    inputs jacob ={.name="Jacob", .key=25};
-    inputs jackie ={.name="Jackie", .key=45};
-    inputs chelsea ={.name="Chelsea", .key=30};
-    inputs jacob2 = {.name="Jacob", .key=12};
-    inputs temp = {};
-    strcpy(temp.name, "jacob");
+	FILE *inputfile = fopen(filename, "r");
+	if (inputfile == NULL) {
+		perror("Unable to open the file");
+		exit(1);
+	} else if (!(argc == 2)) {
+		printf("invalid arguments in command line.");
+		exit(1);
+	}
 
-    printf("%s\n", temp.name);
+	//initialization of values for hash insertions and checks
+	int inputcount = 0;
+	int tempkey;
+	char tempLine[256];
+	int searchIndex;
+	inputs intohash[1000];
 
+	//file traversal
+	while (fgets(tempLine, sizeof(tempLine), inputfile)) {
+		
+		//copies name in file to name in struct inputs
+		char *nametoken = strtok(tempLine, " ");
+		//printf("current name is: %s\n", nametoken);
+		strcpy(intohash[inputcount].name, nametoken);
 
+		//checks if there is a key value, if there is, it will hash into table
+		//otherwise, it will search the table for the name
+		char *keytoken = strtok(NULL, " ");
+		if (!(keytoken == NULL)) {
+			tempkey = atoi(keytoken);
+			//printf("current key is: %d\n", tempkey);
+			intohash[inputcount].key = tempkey;
 
-    hashInsert(&jacob);
-    hashInsert(&jackie);
-    hashInsert(&chelsea);
-    hashInsert(&jacob2);
+			hashInsert(&intohash[inputcount]);
 
-    printTable();
+		}else{ //need to write else statement for searching
+			nametoken[strlen(nametoken) - 2] = '\0';
+			searchIndex = hash(nametoken);
 
+			inputs *tmp = hashSearch(nametoken);
+			if (tmp == NULL) {
+				printf("ERROR %s not found\n", nametoken);
+			} else {
+				printf("%s found at location %d with a value of %d\n", nametoken, searchIndex, tmp->key);
+			}
+		}	
+		inputcount++;
+	} //end while
+
+	fclose(inputfile);
+	//printTable();
     return 0;
 }
