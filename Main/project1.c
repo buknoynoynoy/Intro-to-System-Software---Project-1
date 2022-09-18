@@ -73,7 +73,7 @@ void printTable() {
 }
 
 
-int main() {
+int main(void) {
 
     //initializes the table
     initializeHashTable();
@@ -81,14 +81,20 @@ int main() {
     inputs jacob ={.name="Jacob", .key=25};
     inputs jackie ={.name="Jackie", .key=45};
     inputs chelsea ={.name="Chelsea", .key=30};
-    inputs jacob2 = {.name="Jacob"};
+    inputs jacob2 = {.name="Jacob", .key=12};
+    inputs temp = {};
+    strcpy(temp.name, "jacob");
+
+    printf("%s\n", temp.name);
+
+
 
     hashInsert(&jacob);
     hashInsert(&jackie);
     hashInsert(&chelsea);
     hashInsert(&jacob2);
 
-    //printTable();
+    printTable();
 
     return 0;
 }
