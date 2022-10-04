@@ -35,7 +35,7 @@ int hash(char *name) {
 void initializeHashTable() {
     int i;
     for (i = 0; i < TABLESIZE; i++) {
-        HashTable[i] == NULL;
+        HashTable[i] = NULL;
     }
 
     return;
@@ -136,9 +136,10 @@ int main(int argc, char *argv[]) {
 
 			hashInsert(&intohash[inputcount]);
 
-		}else{ //need to write else statement for searching
-			nametoken[strlen(nametoken) - 2] = '\0';
-			searchIndex = hash(nametoken);
+		} else { //need to write else statement for searching
+			//assigns the last space to null terminator
+			nametoken[strlen(nametoken) - 1] = '\0'; //to remove whitespace for searches
+			searchIndex = hash(nametoken);			//find the location index where the key is at
 
 			inputs *tmp = hashSearch(nametoken);
 			if (tmp == NULL) {
