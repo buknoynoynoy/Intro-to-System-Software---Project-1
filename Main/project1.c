@@ -52,8 +52,7 @@ bool hashInsert(inputs *person) {
     //checks if the person already exists
     if ((HashTable[index] != NULL)) {
         if ((strncmp(HashTable[index]->name, person->name, 256) == 0)) {
-            //printf("%s found at location %d with a value of %d\n", HashTable[index]->name, index, HashTable[index]->key);
-	    printf("ERROR: %s already exists at location %d\n", HashTable[index]->name, index);
+	    	printf("ERROR: %s already exists at location %d\n", HashTable[index]->name, index);
             return false;
         } else {
 		printf("Collision occured\n");
@@ -152,6 +151,6 @@ int main(int argc, char *argv[]) {
 	} //end while
 
 	fclose(inputfile);
-	//printTable();
+	printTable();
     return 0;
 }
