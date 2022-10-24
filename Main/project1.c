@@ -15,9 +15,33 @@
 //struct for the user inputs
 typedef struct inputs {
     char name[256];
+	char nameTwo[256];
+	char nameThree[256];
     int key;
 
 } inputs; //end struct
+
+//struct for opcode
+typedef struct opcode {
+	char name[256];
+	int value;
+} opcode;
+
+opcode opcodes[256] = {
+	{"+LDB",0x68}, {"MULR",0x98}, {"+SSK",0xEC}, 
+	{"WD",0xDC}, {"*STK",0x10}, {"*OR",0x44},
+	{"AND",0x40}, {"*LDA",0x00}, {"+JGT",0x34},
+	{"+STL",0x14}, {"*WD",0xDC}, {"+STI",0xD4},
+	{"LPS",0xD0}, {"+LDT",0x74}, {"*LDCH",0x50},
+	{"*LDL",0x08}, {"TIXR",0xB8}, {"SUBF",0x5C},
+	{"STA",0x0C}, {"LDA",0x00}
+};
+
+typedef struct address {
+	int start;
+	int current;
+	int final;
+} address;
 
 inputs *HashTable[TABLESIZE];
 
@@ -48,7 +72,15 @@ bool hashInsert(inputs *person) {
         return false;
     }
     int index = hash(person->name);
-    
+	for (int i = 0; i < TABLESIZE; i++) {
+		int try = (i + index) % TABLESIZE;
+		if (HashTable[try] == NULL) {
+			HashTable[try] = person;
+			printf("Stored %s %d at location %d\n", person->name, person->key, index);
+			return true;
+		}
+	}
+/**
     //checks if the person already exists
     if ((HashTable[index] != NULL)) {
         if ((strncmp(HashTable[index]->name, person->name, 256) == 0)) {
@@ -60,21 +92,29 @@ bool hashInsert(inputs *person) {
 	}	
         return false;
     }
-
-    //if no one is there, it will insert the new person
-    HashTable[index] = person;
-    printf("Stored %s %d at location %d\n", person->name, person->key, index);
-    return true;
+**/
+    //printf("Stored %s %d at location %d\n", person->name, person->key, index);
+    return false;
 
 } //end hashInsert
 
 inputs *hashSearch (char *nameSearch) {
 	int index = hash(nameSearch);
+	for (int i = 0; i < TABLESIZE; i++) {
+		int try = (i + index) % TABLESIZE;
+		if (HashTable[try] != NULL && strncmp(HashTable[try]->name, nameSearch, 256) == 0) {
+		return HashTable[try];
+		} //end if
+	}
+
+	return NULL;
+/**
 	if (HashTable[index] != NULL && strncmp(HashTable[index]->name, nameSearch, 256) == 0) {
 		return HashTable[index];
 	} else {
 		return NULL;
 	} //end if
+**/
 } //end hashSearch
 
 //prints the table
@@ -91,10 +131,13 @@ void printTable() {
     return;
 }
 
+//void performPassOne()
+
 
 int main(int argc, char *argv[]) {
 	
 	initializeHashTable();
+	address addresses = {0x00, 0x00, 0x00};
 
 	char filename[100];
 	strcpy(filename, argv[1]);
@@ -110,6 +153,23 @@ int main(int argc, char *argv[]) {
 		exit(1);
 	}
 
+	char tempLine[256];
+	char nameOne[256];
+	char nameTwo[256];
+	char nameThree[256];
+
+	while (!feof(inputfile)) {
+
+		fscanf(inputfile, "%s\t%s\t%s", nameOne, nameTwo, nameThree);
+
+
+		printf("String 1: %s\n", nameOne);
+		printf("String 2: %s\n", nameTwo);
+		printf("String 3: %s\n\n", nameThree);
+
+		printf("Complete String: %s\t%s\t%s\n", nameOne, nameTwo, nameThree);
+	}
+/**
 	//initialization of values for hash insertions and checks
 	int inputcount = 0;
 	int tempkey;
@@ -122,7 +182,6 @@ int main(int argc, char *argv[]) {
 		
 		//copies name in file to name in struct inputs
 		char *nametoken = strtok(tempLine, " ");
-		//printf("current name is: %s\n", nametoken);
 		strcpy(intohash[inputcount].name, nametoken);
 
 		//checks if there is a key value, if there is, it will hash into table
@@ -135,7 +194,9 @@ int main(int argc, char *argv[]) {
 
 			hashInsert(&intohash[inputcount]);
 
-		} else { //need to write else statement for searching
+		//search part of the function
+		}
+		else {
 			//assigns the last space to null terminator
 			nametoken[strlen(nametoken) - 1] = '\0'; //to remove whitespace for searches
 			searchIndex = hash(nametoken);			//find the location index where the key is at
@@ -149,8 +210,8 @@ int main(int argc, char *argv[]) {
 		}	
 		inputcount++;
 	} //end while
-
+**/
 	fclose(inputfile);
-	printTable();
+	//printTable();
     return 0;
 }

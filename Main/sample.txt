@@ -1,8 +1,6 @@
-moss 25
-eno
-moss 45
-robert 23
-robert
-jacob 43
-chelsea 25
-livvy 43
+LIFE    START   100
+BEGIN   LDA #0
+LIVE    LAUGH   100
+LOVE    LIFE    BEGIN
+    DO  YOU
+THANK   YOU LOTS
